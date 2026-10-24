@@ -1,0 +1,112 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "npm",
+    "analytics": false
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "seed-ngx-library": {
+      "projectType": "library",
+      "root": "projects/seed-ngx-library",
+      "sourceRoot": "projects/seed-ngx-library/src",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/seed-ngx-library/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/seed-ngx-library/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production",
+          "options": {
+            "project": "projects/seed-ngx-library/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/seed-ngx-library/tsconfig.spec.json",
+            "buildTarget": "seed-ngx-library-demo:build:development"
+          }
+        }
+      }
+    },
+    "seed-ngx-library-demo": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "inlineTemplate": true,
+          "inlineStyle": true,
+          "style": "scss"
+        }
+      },
+      "root": "projects/seed-ngx-library-demo",
+      "sourceRoot": "projects/seed-ngx-library-demo/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/seed-ngx-library-demo/src/main.ts",
+            "tsConfig": "projects/seed-ngx-library-demo/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/seed-ngx-library-demo/public"
+              }
+            ],
+            "styles": [
+              "projects/seed-ngx-library-demo/src/styles.scss"
+            ],
+            "index": "projects/seed-ngx-library-demo/src/index.html"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "seed-ngx-library-demo:build:production"
+            },
+            "development": {
+              "buildTarget": "seed-ngx-library-demo:build:development"
+            }
+          },
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 4200
+          }
+        }
+      }
+    }
+  }
+}
